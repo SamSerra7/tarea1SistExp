@@ -3666,6 +3666,10 @@ function Form1(){
     while(root.firstChild){
         root.removeChild(root.firstChild);
     }
+    let result = document.getElementById("result")
+    while(result.firstChild){
+        result.removeChild(result.firstChild);
+    }
     createForm1(root);
 }
 
