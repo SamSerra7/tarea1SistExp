@@ -1,0 +1,22 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-gap: 10px;
+    padding: 5px;
+}
+  
+.grid-container > div {
+    background-color: #6587a3e5;
+    text-align: center initial;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 20px;
+    color: aliceblue; 
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.grid-container > div:hover{
+    background-color: #4f6170f8;
+}
