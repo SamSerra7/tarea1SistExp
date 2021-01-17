@@ -103,7 +103,7 @@ function createForm3(root){
     let button = document.createElement("button");
     button.type= "submit";
     button.innerText = "Calcular"
-    button.addEventListener("click",() => calculate(root));
+    button.addEventListener("click",() => calculate3(root));
     button.classList.add("btn-calculate");
     
 
@@ -119,7 +119,7 @@ function createForm3(root){
 
 
 //make the euclidean calculation
-function calculate(root){
+function calculate3(root){
 
     let currentGender = "";
     let currentDistance;
@@ -131,18 +131,20 @@ function calculate(root){
     
     //evaluate all variables against the JSON
     getJSON()["EstiloSexoPromedioRecinto"].map(element => {
+        //make the euclidean calc
         let euclidean = Math.sqrt( 
                                     ( ( learningType === element["Estilo"].toLowerCase()? 0.001 : 1 ) ^ 2 ) + 
                                     ( ( average - parseFloat(element["Promedio"]) ) ^ 2 ) + 
                                     ( ( branch === element["Recinto"] ? 0.001 : 1 ) ^ 2 ) 
                                 );
-    
+        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
         if(currentDistance === undefined || euclidean < currentDistance){
             currentDistance = euclidean;
             currentGender = element["Sexo"];
         }                   
     });
 
+    //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
         result.removeChild(result.firstChild);

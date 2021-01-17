@@ -3787,7 +3787,7 @@ function createForm1(root){
     let button = document.createElement("button");
     button.type= "submit";
     button.innerText = "Calcular"
-    button.addEventListener("click",() => calculate(root));
+    button.addEventListener("click",() => calculate1(root));
     button.classList.add("btn-calculate");
     
 
@@ -3833,7 +3833,7 @@ function createOption(name){
 }
 
 //make the euclidean calculation
-function calculate(root){
+function calculate1(root){
 
     let currentType = "";
     let currentDistance;
@@ -3869,19 +3869,21 @@ function calculate(root){
 
     //evaluate all variables against the JSON
     getJSON()["RecintoEstilo"].map(element => {
+        //make the euclidean calc
         let euclidean = Math.sqrt( 
                                     ( ( ca - parseInt(element.CA) ) ^ 2 ) + 
                                     ( ( ec - parseInt(element.EC) ) ^ 2 ) + 
                                     ( ( ea - parseInt(element.EA) ) ^ 2 ) + 
                                     ( ( or - parseInt(element.OR) ) ^ 2 ) 
                                 );
-    
+        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
         if(currentDistance === undefined || euclidean < currentDistance){
             currentDistance = euclidean;
             currentType = element["Estilo"];
         }                   
     });
 
+    //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
         result.removeChild(result.firstChild);

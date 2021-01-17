@@ -253,7 +253,7 @@ function createForm5(root){
     let button = document.createElement("button");
     button.type= "submit";
     button.innerText = "Calcular"
-    button.addEventListener("click",() => calculate(root));
+    button.addEventListener("click",() => calculate5(root));
     button.classList.add("btn-calculate");
     
 
@@ -269,7 +269,7 @@ function createForm5(root){
 
 
 //make the euclidean calculation
-function calculate(root){
+function calculate5(root){
 
     let profesorType = "";
     let currentDistance;
@@ -286,6 +286,7 @@ function calculate(root){
     
     //evaluate all variables against the JSON
     getJSON()["Profesores"].map(element => {
+        //make the euclidean calc
         let euclidean = Math.sqrt( 
                                     ( ( age - parseInt(element.A) ) ^ 2 ) + 
                                     ( ( gender === element.B ? 0.001 : 1 ) ^ 2 ) +
@@ -297,12 +298,17 @@ function calculate(root){
                                     ( ( exp_web === element.H ? 0.001 : 1 ) ^ 2 ) 
                                 );
     
+        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
         if(currentDistance === undefined || euclidean < currentDistance){
             currentDistance = euclidean;
             profesorType = element["Class"];
-        }                   
+        }
+        else if(euclidean=currentDistance){
+            profesorType + " o "+element["Class"];
+        }
     });
 
+    //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
         result.removeChild(result.firstChild);
