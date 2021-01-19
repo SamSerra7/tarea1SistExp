@@ -61,7 +61,7 @@ function createForm6(root){
     // Option links
     let opt_links = document.createElement("div");
     let lbl_links = document.createElement("h5");
-    lbl_links.innerText = "Confiabilidad";
+    lbl_links.innerText = "Conexión";
     //options
     let opt_sel_links = document.createElement("select");
     opt_sel_links.id = "links";
