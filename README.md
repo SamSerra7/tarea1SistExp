@@ -1,2 +1,2 @@
 # Tarea 1 Sistemas Expertos
-##Samuel Serrano Guerra
+## Samuel Serrano Guerra
