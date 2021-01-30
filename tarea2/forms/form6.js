@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+const entityNameNetworks = "Redes";
+
 function Form6(){
     let root = document.getElementById("root");
     while(root.firstChild){
@@ -204,37 +206,37 @@ function createForm6(root){
 }
 
 
-
-
-
-//make the euclidean calculation
+//make the bayes calculation
 function calculate6(root){
 
     let networkType = "";
-    let currentDistance;
+    let bayesA = 0;
+    let bayesB = 0;
 
+    //gets the info from the form
     let reliability = document.getElementById("reliability").value;
     let links = document.getElementById("links").value;
     let capacity = document.getElementById("capacity").value;
     let cost = document.getElementById("cost").value;
 
-    
-    //evaluate all variables against the JSON
-    getJSON()["Redes"].map(element => {
-        //make the euclidean calc
-        let euclidean = Math.sqrt( 
-                                    ( ( parseInt(reliability) - parseInt(element["Reliability (R)"]) ) ^ 2 ) + 
-                                    ( ( parseInt(links) - parseInt(element["Number of links (L)"]) ) ^ 2 ) + 
-                                    //I change the values of High Medium Low for 3, 2, 1 respectively, to increase accuracy (capacity,cost)
-                                    ( ( parseInt(capacity) - element["Capacity (Ca)"] == "High" ? 3 : element["Capacity (Ca)"] == "Medium" ? 2 : 1 ) ^ 2 ) + 
-                                    ( ( parseInt(cost) - element["Costo (Co)"] == "High" ? 3 : element["Costo (Co)"] == "Medium" ? 2 : 1  ) ^ 2 ) 
-                                );
-        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
-        if(currentDistance === undefined || euclidean < currentDistance){
-            currentDistance = euclidean;
-            networkType = element["Class"];
-        }
-    });
+    //sets the percentage of all attributes
+    let p_reliability = 1/percentageDistinctValues(entityNameNetworks,"Reliability (R)");
+    let p_links = 1/percentageDistinctValues(entityNameNetworks,"Number of links (L)");
+    let p_capacity = 1/percentageDistinctValues(entityNameNetworks,"Capacity (Ca)");
+    let p_cost = 1/percentageDistinctValues(entityNameNetworks,"Costo (Co)");
+
+    const m = 8;
+
+    let classInstancesA = getInstances(entityNameNetworks,"Class","A");
+    let classInstancesB = getInstances(entityNameNetworks,"Class","B");
+
+    let totalClassInstances = (classInstancesA+classInstancesB);
+    let p_A = classInstancesA/totalClassInstances;
+    let p_B = classInstancesB/totalClassInstances;
+
+    //makes the calculations of the bayes algorithm
+    networkType = bayesAlgorithmNetworks();
+
 
     //show the result dinamically in the screen
     let result = document.getElementById("result")
@@ -246,4 +248,44 @@ function calculate6(root){
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
+}
+
+function bayesAlgorithmNetworks(){
+    //A frecuencies
+    let refrecuencyA = getInstancesByClass(entityNameNetworks,"Reliability (R)",reliability,"A");
+    let lifrecuencyA = getInstancesByClass(entityNameNetworks,"Number of links (L)",links,"A");
+    let cafrecuencyA = getInstancesByClass(entityNameNetworks,"Capacity (Ca)",capacity,"A");
+    let cofrecuencyA = getInstancesByClass(entityNameNetworks,"Costo (Co)",cost,"A");
+
+    //B Frecuencies
+    let refrecuencyB = getInstancesByClass(entityNameNetworks,"Reliability (R)",reliability,"B");
+    let lifrecuencyB = getInstancesByClass(entityNameNetworks,"Number of links (L)",links,"B");
+    let cafrecuencyB = getInstancesByClass(entityNameNetworks,"Capacity (Ca)",capacity,"B");
+    let cofrecuencyB = getInstancesByClass(entityNameNetworks,"Costo (Co)",cost,"B");
+
+
+    //bayes calculations
+    //A products
+    let rebayesA = bayes(refrecuencyA,m,p_reliability,classInstancesA);
+    let libayesA = bayes(lifrecuencyA,m,p_links,classInstancesA);
+    let cabayesA = bayes(cafrecuencyA,m,p_capacity,classInstancesA);
+    let cobayesA = bayes(cofrecuencyA,m,p_cost,classInstancesA);
+
+    let A_prod =  rebayesA * libayesA * cabayesA * cobayesA;
+
+    //beginer products
+    let rebayesB = bayes(refrecuencyB,m,p_reliability,classInstancesB);
+    let libayesB = bayes(lifrecuencyB,m,p_links,classInstancesB);
+    let cabayesB = bayes(cafrecuencyB,m,p_capacity,classInstancesB);
+    let cobayesB = bayes(cofrecuencyB,m,p_cost,classInstancesB);
+    
+    let B_prod =  rebayesB * libayesB * cabayesB * cobayesB;
+    console.log(B_prod);
+    
+    bayesA = A_prod*p_A; 
+    bayesB = B_prod*p_B;        
+
+    //validates if its A,B (if the clases are equal, it can be both)
+    return bayesA > bayesB ? "A": bayesB > bayesA ? "B": "A o B (ambas son iguales o no hay suficientes datos)"; 
+
 }

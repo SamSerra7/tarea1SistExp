@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 
-const entityName = "Profesores";
+const entityNameProfesors = "Profesores";
 
 
 function Form5(){
@@ -287,110 +287,28 @@ function calculate5(root){
     let exp_web = document.getElementById("exp_web").value;
 
     //set percentage of all attributes
-    let p_age = 1/percentageDistinctValues(entityName,"A");
-    let p_gender = 1/percentageDistinctValues(entityName,"B");
-    let p_exp = 1/percentageDistinctValues(entityName,"C");
-    let p_times = 1/percentageDistinctValues(entityName,"D");
-    let p_area = 1/percentageDistinctValues(entityName,"E");
-    let p_skills = 1/percentageDistinctValues(entityName,"F");
-    let p_tech_teaching = 1/percentageDistinctValues(entityName,"G");
-    let p_exp_web = 1/percentageDistinctValues(entityName,"H");
+    let p_age = 1/percentageDistinctValues(entityNameProfesors,"A");
+    let p_gender = 1/percentageDistinctValues(entityNameProfesors,"B");
+    let p_exp = 1/percentageDistinctValues(entityNameProfesors,"C");
+    let p_times = 1/percentageDistinctValues(entityNameProfesors,"D");
+    let p_area = 1/percentageDistinctValues(entityNameProfesors,"E");
+    let p_skills = 1/percentageDistinctValues(entityNameProfesors,"F");
+    let p_tech_teaching = 1/percentageDistinctValues(entityNameProfesors,"G");
+    let p_exp_web = 1/percentageDistinctValues(entityNameProfesors,"H");
 
     const m = 8;
 
-    let classInstancesBeginner = getInstances(entityName,"Class","Beginner");
-    let classInstancesIntermediate = getInstances(entityName,"Class","Intermediate");
-    let classInstancesAdvanced = getInstances(entityName,"Class","Advanced");
+    let classInstancesBeginner = getInstances(entityNameProfesors,"Class","Beginner");
+    let classInstancesIntermediate = getInstances(entityNameProfesors,"Class","Intermediate");
+    let classInstancesAdvanced = getInstances(entityNameProfesors,"Class","Advanced");
 
     let totalClassInstances = (classInstancesBeginner+classInstancesIntermediate+classInstancesAdvanced);
     let p_beginner = classInstancesBeginner/totalClassInstances;
     let p_intermediate = classInstancesIntermediate/totalClassInstances;
     let p_advanced = classInstancesAdvanced/totalClassInstances;
 
-    //evaluate all variables against the JSON and apply the bayes algorithm
-    getJSON()[entityName].map(element => {
-        
-        //Beginner Frecuencies
-        let AfrecuencyB = getInstancesByClass(entityName,"A",age,"Beginner");
-        let BfrecuencyB = getInstancesByClass(entityName,"B",gender,"Beginner");
-        let CfrecuencyB = getInstancesByClass(entityName,"C",exp,"Beginner");
-        let DfrecuencyB = getInstancesByClass(entityName,"D",times,"Beginner");
-        let EfrecuencyB = getInstancesByClass(entityName,"E",area,"Beginner");
-        let FfrecuencyB = getInstancesByClass(entityName,"F",skills,"Beginner");
-        let GfrecuencyB = getInstancesByClass(entityName,"G",tech_teaching,"Beginner");
-        let HfrecuencyB = getInstancesByClass(entityName,"H",exp_web,"Beginner");
-
-        //Intermediate Frecuencies
-        let AfrecuencyI = getInstancesByClass(entityName,"A",age,"Intermediate");
-        let BfrecuencyI = getInstancesByClass(entityName,"B",gender,"Intermediate");
-        let CfrecuencyI = getInstancesByClass(entityName,"C",exp,"Intermediate");
-        let DfrecuencyI = getInstancesByClass(entityName,"D",times,"Intermediate");
-        let EfrecuencyI = getInstancesByClass(entityName,"E",area,"Intermediate");
-        let FfrecuencyI = getInstancesByClass(entityName,"F",skills,"Intermediate");
-        let GfrecuencyI = getInstancesByClass(entityName,"G",tech_teaching,"Intermediate");
-        let HfrecuencyI = getInstancesByClass(entityName,"H",exp_web,"Intermediate");
-
-        //Intermediate Advanced
-        let AfrecuencyA = getInstancesByClass(entityName,"A",age,"Advanced");
-        let BfrecuencyA = getInstancesByClass(entityName,"B",gender,"Advanced");
-        let CfrecuencyA = getInstancesByClass(entityName,"C",exp,"Advanced");
-        let DfrecuencyA = getInstancesByClass(entityName,"D",times,"Advanced");
-        let EfrecuencyA = getInstancesByClass(entityName,"E",area,"Advanced");
-        let FfrecuencyA = getInstancesByClass(entityName,"F",skills,"Advanced");
-        let GfrecuencyA = getInstancesByClass(entityName,"G",tech_teaching,"Advanced");
-        let HfrecuencyA = getInstancesByClass(entityName,"H",exp_web,"Advanced");
-
-        //bayes calculations
-        //beginer products
-        let AbayesB = bayes(AfrecuencyB,m,p_age,classInstancesBeginner);
-        let BbayesB = bayes(BfrecuencyB,m,p_gender,classInstancesBeginner);
-        let CbayesB = bayes(CfrecuencyB,m,p_exp,classInstancesBeginner);
-        let DbayesB = bayes(DfrecuencyB,m,p_times,classInstancesBeginner);
-        let EbayesB = bayes(EfrecuencyB,m,p_area,classInstancesBeginner);
-        let FbayesB = bayes(FfrecuencyB,m,p_skills,classInstancesBeginner);
-        let GbayesB = bayes(GfrecuencyB,m,p_tech_teaching,classInstancesBeginner);
-        let HbayesB = bayes(HfrecuencyB,m,p_exp_web,classInstancesBeginner);
-        
-        let beg_prod =  AbayesB * BbayesB * CbayesB *
-                        DbayesB * EbayesB * FbayesB *
-                        GbayesB * HbayesB;
-
-        //intermediate products
-        let AbayesI = bayes(AfrecuencyI,m,p_age,classInstancesIntermediate);
-        let BbayesI = bayes(BfrecuencyI,m,p_gender,classInstancesIntermediate);
-        let CbayesI = bayes(CfrecuencyI,m,p_exp,classInstancesIntermediate);
-        let DbayesI = bayes(DfrecuencyI,m,p_times,classInstancesIntermediate);
-        let EbayesI = bayes(EfrecuencyI,m,p_area,classInstancesIntermediate);
-        let FbayesI = bayes(FfrecuencyI,m,p_skills,classInstancesIntermediate);
-        let GbayesI = bayes(GfrecuencyI,m,p_tech_teaching,classInstancesIntermediate);
-        let HbayesI = bayes(HfrecuencyI,m,p_exp_web,classInstancesIntermediate);
-
-        let inter_prod =    AbayesI * BbayesI * CbayesI *
-                            DbayesI * EbayesI * FbayesI *
-                            GbayesI * HbayesI;
-
-        //advanced products
-        let AbayesA = bayes(AfrecuencyA,m,p_age,classInstancesAdvanced);
-        let BbayesA = bayes(BfrecuencyA,m,p_gender,classInstancesAdvanced);
-        let CbayesA = bayes(CfrecuencyA,m,p_exp,classInstancesAdvanced);
-        let DbayesA = bayes(DfrecuencyA,m,p_times,classInstancesAdvanced);
-        let EbayesA = bayes(EfrecuencyA,m,p_area,classInstancesAdvanced);
-        let FbayesA = bayes(FfrecuencyA,m,p_skills,classInstancesAdvanced);
-        let GbayesA = bayes(GfrecuencyA,m,p_tech_teaching,classInstancesAdvanced);
-        let HbayesA = bayes(HfrecuencyA,m,p_exp_web,classInstancesAdvanced);
-
-        let adv_prod =  AbayesA * BbayesA * CbayesA *
-                        DbayesA * EbayesA * FbayesA *
-                        GbayesA * HbayesA;
-
-        
-        bayesB = beg_prod*p_beginner;
-        bayesI = inter_prod*p_intermediate;
-        bayesA = adv_prod*p_advanced;
-
-    });    
-
-    profesorType = minBayesBIA(bayesB,bayesI,bayesA);
+    //exevutes the bayes algorithm
+    profesorType = bayesAlgorithmProfesors();
 
     //show the result dinamically in the screen
     let result = document.getElementById("result")
@@ -408,6 +326,90 @@ function calculate5(root){
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
+}
+
+//returns the profesor type who fits the most
+function bayesAlgorithmProfesors(){
+
+    //Beginner Frecuencies
+    let AfrecuencyB = getInstancesByClass(entityNameProfesors,"A",age,"Beginner");
+    let BfrecuencyB = getInstancesByClass(entityNameProfesors,"B",gender,"Beginner");
+    let CfrecuencyB = getInstancesByClass(entityNameProfesors,"C",exp,"Beginner");
+    let DfrecuencyB = getInstancesByClass(entityNameProfesors,"D",times,"Beginner");
+    let EfrecuencyB = getInstancesByClass(entityNameProfesors,"E",area,"Beginner");
+    let FfrecuencyB = getInstancesByClass(entityNameProfesors,"F",skills,"Beginner");
+    let GfrecuencyB = getInstancesByClass(entityNameProfesors,"G",tech_teaching,"Beginner");
+    let HfrecuencyB = getInstancesByClass(entityNameProfesors,"H",exp_web,"Beginner");
+
+    //Intermediate Frecuencies
+    let AfrecuencyI = getInstancesByClass(entityNameProfesors,"A",age,"Intermediate");
+    let BfrecuencyI = getInstancesByClass(entityNameProfesors,"B",gender,"Intermediate");
+    let CfrecuencyI = getInstancesByClass(entityNameProfesors,"C",exp,"Intermediate");
+    let DfrecuencyI = getInstancesByClass(entityNameProfesors,"D",times,"Intermediate");
+    let EfrecuencyI = getInstancesByClass(entityNameProfesors,"E",area,"Intermediate");
+    let FfrecuencyI = getInstancesByClass(entityNameProfesors,"F",skills,"Intermediate");
+    let GfrecuencyI = getInstancesByClass(entityNameProfesors,"G",tech_teaching,"Intermediate");
+    let HfrecuencyI = getInstancesByClass(entityNameProfesors,"H",exp_web,"Intermediate");
+
+    //Intermediate Advanced
+    let AfrecuencyA = getInstancesByClass(entityNameProfesors,"A",age,"Advanced");
+    let BfrecuencyA = getInstancesByClass(entityNameProfesors,"B",gender,"Advanced");
+    let CfrecuencyA = getInstancesByClass(entityNameProfesors,"C",exp,"Advanced");
+    let DfrecuencyA = getInstancesByClass(entityNameProfesors,"D",times,"Advanced");
+    let EfrecuencyA = getInstancesByClass(entityNameProfesors,"E",area,"Advanced");
+    let FfrecuencyA = getInstancesByClass(entityNameProfesors,"F",skills,"Advanced");
+    let GfrecuencyA = getInstancesByClass(entityNameProfesors,"G",tech_teaching,"Advanced");
+    let HfrecuencyA = getInstancesByClass(entityNameProfesors,"H",exp_web,"Advanced");
+
+    //bayes calculations
+    //beginer products
+    let AbayesB = bayes(AfrecuencyB,m,p_age,classInstancesBeginner);
+    let BbayesB = bayes(BfrecuencyB,m,p_gender,classInstancesBeginner);
+    let CbayesB = bayes(CfrecuencyB,m,p_exp,classInstancesBeginner);
+    let DbayesB = bayes(DfrecuencyB,m,p_times,classInstancesBeginner);
+    let EbayesB = bayes(EfrecuencyB,m,p_area,classInstancesBeginner);
+    let FbayesB = bayes(FfrecuencyB,m,p_skills,classInstancesBeginner);
+    let GbayesB = bayes(GfrecuencyB,m,p_tech_teaching,classInstancesBeginner);
+    let HbayesB = bayes(HfrecuencyB,m,p_exp_web,classInstancesBeginner);
+    
+    let beg_prod =  AbayesB * BbayesB * CbayesB *
+                    DbayesB * EbayesB * FbayesB *
+                    GbayesB * HbayesB;
+
+    //intermediate products
+    let AbayesI = bayes(AfrecuencyI,m,p_age,classInstancesIntermediate);
+    let BbayesI = bayes(BfrecuencyI,m,p_gender,classInstancesIntermediate);
+    let CbayesI = bayes(CfrecuencyI,m,p_exp,classInstancesIntermediate);
+    let DbayesI = bayes(DfrecuencyI,m,p_times,classInstancesIntermediate);
+    let EbayesI = bayes(EfrecuencyI,m,p_area,classInstancesIntermediate);
+    let FbayesI = bayes(FfrecuencyI,m,p_skills,classInstancesIntermediate);
+    let GbayesI = bayes(GfrecuencyI,m,p_tech_teaching,classInstancesIntermediate);
+    let HbayesI = bayes(HfrecuencyI,m,p_exp_web,classInstancesIntermediate);
+
+    let inter_prod =    AbayesI * BbayesI * CbayesI *
+                        DbayesI * EbayesI * FbayesI *
+                        GbayesI * HbayesI;
+
+    //advanced products
+    let AbayesA = bayes(AfrecuencyA,m,p_age,classInstancesAdvanced);
+    let BbayesA = bayes(BfrecuencyA,m,p_gender,classInstancesAdvanced);
+    let CbayesA = bayes(CfrecuencyA,m,p_exp,classInstancesAdvanced);
+    let DbayesA = bayes(DfrecuencyA,m,p_times,classInstancesAdvanced);
+    let EbayesA = bayes(EfrecuencyA,m,p_area,classInstancesAdvanced);
+    let FbayesA = bayes(FfrecuencyA,m,p_skills,classInstancesAdvanced);
+    let GbayesA = bayes(GfrecuencyA,m,p_tech_teaching,classInstancesAdvanced);
+    let HbayesA = bayes(HfrecuencyA,m,p_exp_web,classInstancesAdvanced);
+
+    let adv_prod =  AbayesA * BbayesA * CbayesA *
+                    DbayesA * EbayesA * FbayesA *
+                    GbayesA * HbayesA;
+
+    
+    bayesB = beg_prod*p_beginner;
+    bayesI = inter_prod*p_intermediate;
+    bayesA = adv_prod*p_advanced;
+
+    return maxBayesBIA(bayesB,bayesI,bayesA)
 }
 
 
@@ -461,6 +463,6 @@ function bayes(frecuency,m,p,n){
 }
 
 //finds the lowest value of B I A
-function minBayesBIA(B,I,A){
+function maxBayesBIA(B,I,A){
     return (B>I) ? (B>A) ? B:A : (I>A) ? I:A; //find the lowest between the three with ternary operators
 }
