@@ -308,7 +308,10 @@ function calculate5(root){
     let p_advanced = classInstancesAdvanced/totalClassInstances;
 
     //exevutes the bayes algorithm
-    profesorType = bayesAlgorithmProfesors();
+    profesorType = bayesAlgorithmProfesors(age,gender,exp,times,
+        area,skills,tech_teaching,exp_web,p_age,p_gender,p_exp,p_times,
+        p_area,p_skills,p_tech_teaching,p_exp_web,m,p_beginner,p_intermediate,p_advanced,
+        classInstancesBeginner,classInstancesIntermediate,classInstancesAdvanced);
 
     //show the result dinamically in the screen
     let result = document.getElementById("result")
@@ -329,7 +332,10 @@ function calculate5(root){
 }
 
 //returns the profesor type who fits the most
-function bayesAlgorithmProfesors(){
+function bayesAlgorithmProfesors(age,gender,exp,times,
+    area,skills,tech_teaching,exp_web,p_age,p_gender,p_exp,p_times,
+    p_area,p_skills,p_tech_teaching,p_exp_web,m,p_beginner,p_intermediate,p_advanced,
+    classInstancesBeginner,classInstancesIntermediate,classInstancesAdvanced){
 
     //Beginner Frecuencies
     let AfrecuencyB = getInstancesByClass(entityNameProfesors,"A",age,"Beginner");

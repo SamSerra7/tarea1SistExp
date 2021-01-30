@@ -139,13 +139,13 @@ function createForm6(root){
     opt_sel_capacity.id = "capacity";
     let opt_1_capacity = document.createElement("option");
     opt_1_capacity.innerText = "Baja";
-    opt_1_capacity.value = "1"; 
+    opt_1_capacity.value = "Low"; 
     let opt_2_capacity = document.createElement("option");
     opt_2_capacity.innerText = "Media";
-    opt_2_capacity.value = "2";
+    opt_2_capacity.value = "Medium";
     let opt_3_capacity = document.createElement("option");
     opt_3_capacity.innerText = "Alta";
-    opt_3_capacity.value = "3";
+    opt_3_capacity.value = "High";
 
 
     opt_sel_capacity.appendChild(opt_1_capacity);
@@ -165,13 +165,13 @@ function createForm6(root){
     opt_sel_cost.id = "cost";
     let opt_1_cost = document.createElement("option");
     opt_1_cost.innerText = "Bajo";
-    opt_1_cost.value = "1"; 
+    opt_1_cost.value = "Low"; 
     let opt_2_cost = document.createElement("option");
     opt_2_cost.innerText = "Medio";
-    opt_2_cost.value = "2";
+    opt_2_cost.value = "Medium";
     let opt_3_cost = document.createElement("option");
     opt_3_cost.innerText = "Alto";
-    opt_3_cost.value = "3";
+    opt_3_cost.value = "High";
 
 
     opt_sel_cost.appendChild(opt_1_cost);
@@ -235,7 +235,11 @@ function calculate6(root){
     let p_B = classInstancesB/totalClassInstances;
 
     //makes the calculations of the bayes algorithm
-    networkType = bayesAlgorithmNetworks();
+    networkType = bayesAlgorithmNetworks(bayesA,bayesB,
+                                            reliability,links,capacity,
+                                            cost,p_reliability,p_links,
+                                            p_capacity,p_cost,m,p_A,p_B,classInstancesA,
+                                            classInstancesB);
 
 
     //show the result dinamically in the screen
@@ -250,7 +254,11 @@ function calculate6(root){
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
 }
 
-function bayesAlgorithmNetworks(){
+function bayesAlgorithmNetworks(bayesA,bayesB,reliability,links,
+                                capacity,cost,p_reliability,p_links,
+                                p_capacity,p_cost,m,p_A,p_B,classInstancesA,
+                                classInstancesB){
+    
     //A frecuencies
     let refrecuencyA = getInstancesByClass(entityNameNetworks,"Reliability (R)",reliability,"A");
     let lifrecuencyA = getInstancesByClass(entityNameNetworks,"Number of links (L)",links,"A");
