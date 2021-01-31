@@ -1,5 +1,4 @@
 /*jshint esversion: 6 */
-let root = document.getElementById("root");
 
 function Form3(){
     let root = document.getElementById("root");
@@ -38,16 +37,16 @@ function createForm3(root){
     opt_sel.id = "learningType";
     let opt_1 = document.createElement("option");
     opt_1.innerText = "divergente";
-    opt_1.value = "divergente"; 
+    opt_1.value = "DIVERGENTE"; 
     let opt_2 = document.createElement("option");
     opt_2.innerText = "convergente";
-    opt_2.value = "convergente";
+    opt_2.value = "CONVERGENTE";
     let opt_3 = document.createElement("option");
     opt_3.innerText = "asimilador";
-    opt_3.value = "asimilador";
+    opt_3.value = "ASIMILADOR";
     let opt_4 = document.createElement("option");
     opt_4.innerText = "acomodador";
-    opt_4.value = "acomodador";
+    opt_4.value = "ACOMODADOR";
 
     opt_sel.appendChild(opt_1);
     opt_sel.appendChild(opt_2);
@@ -114,45 +113,88 @@ function createForm3(root){
     root.appendChild(button); //add button to the root
 }
 
-
-
-
-
-//make the euclidean calculation
+//make the bayesian calculation
 function calculate3(root){
 
     let currentGender = "";
-    let currentDistance;
-
-    let learningType = document.getElementById("learningType").value;
-    let average = document.getElementById("average").value;
-    let branch = document.getElementById("branch").value;
-
     
-    //evaluate all variables against the JSON
-    getJSON()["EstiloSexoPromedioRecinto"].map(element => {
-        //make the euclidean calc
-        let euclidean = Math.sqrt( 
-                                    ( ( learningType === element["Estilo"].toLowerCase()? 0.001 : 1 ) ^ 2 ) + 
-                                    ( ( average - parseFloat(element["Promedio"]) ) ^ 2 ) + 
-                                    ( ( branch === element["Recinto"] ? 0.001 : 1 ) ^ 2 ) 
-                                );
-        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
-        if(currentDistance === undefined || euclidean < currentDistance){
-            currentDistance = euclidean;
-            currentGender = element["Sexo"];
-        }                   
-    });
+    let bayesGM=0;
+    let bayesGF=0;
+
+    let branch = document.getElementById("branch").value;
+    let average = document.getElementById("average").value;
+    let learningType = document.getElementById("learningType").value;
+
+    //sets the percentage of all attributes
+    let p_branch = 1/percentageDistinctValues(entityNameStudent,"Recinto");
+    let p_average = 1/percentageDistinctValues(entityNameStudent,"Promedio");
+    let p_learningType = 1/percentageDistinctValues(entityNameStudent,"Estilo");
+   
+    const m = 8;
+
+    let classInstancesGM = getInstances(entityNameStudent,"Sexo","M");
+    let classInstancesGF = getInstances(entityNameStudent,"Sexo","F");
+
+    let totalClassInstances = (classInstancesGM+classInstancesGF);
+    
+    let p_GM = classInstancesGM/totalClassInstances;
+    let p_GF = classInstancesGF/totalClassInstances;
+
+
+    currentGender = bayesAlgorithmGenderByBALT(bayesGM,bayesGF,branch,average,
+                                                learningType,p_branch,p_average,
+                                                p_learningType,m,classInstancesGM,classInstancesGF,
+                                                p_GM,p_GF);
 
     //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
         result.removeChild(result.firstChild);
     }
-    let gender = currentGender.toLowerCase() === "m" ? "Masculino": "Femenino";
     let finalStr = document.createElement("h1");
-    finalStr.innerText = "Tu género es, probablemente: "+ gender;
+    finalStr.innerText = "Tu género es, probablemente: "+ currentGender;
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
+}
+
+function bayesAlgorithmGenderByBALT(bayesGM,bayesGF,branch,average,
+                                    learningType,p_branch,p_average,
+                                    p_learningType,m,classInstancesGM,classInstancesGF,
+                                    p_GM,p_GF){
+
+    //Gender M frecuencies
+    let BfrecuencyGM = getInstancesByClass(entityNameStudent,"Recinto",branch,"M");
+    let AfrecuencyGM = getInstancesByClass(entityNameStudent,"Promedio",average,"M");
+    let LTfrecuencyGM = getInstancesByClass(entityNameStudent,"Estilo",learningType,"M");
+    //Gender F frecuencies
+    let BfrecuencyGF = getInstancesByClass(entityNameStudent,"Recinto",branch,"F");
+    let AfrecuencyGF = getInstancesByClass(entityNameStudent,"Promedio",average,"F");
+    let LTfrecuencyGF = getInstancesByClass(entityNameStudent,"Estilo",learningType,"F");
+
+
+    //bayes calculations
+    //M products
+    let BbayesGM = bayes(BfrecuencyGM,m,p_branch,classInstancesGM);
+    let AbayesGM = bayes(AfrecuencyGM,m,p_average,classInstancesGM);
+    let LTbayesGM = bayes(LTfrecuencyGM,m,p_learningType,classInstancesGM);
+    
+    let GM_prod =  BbayesGM * AbayesGM * LTbayesGM;
+
+    //F products
+    let BbayesGF = bayes(BfrecuencyGF,m,p_branch,classInstancesGF);
+    let AayesGF = bayes(AfrecuencyGF,m,p_average,classInstancesGF);
+    let LTbayesGF = bayes(LTfrecuencyGF,m,p_learningType,classInstancesGF);
+    
+    let GF_prod =  BbayesGF * AayesGF * LTbayesGF;
+
+
+    bayesGM = GM_prod*p_GM;
+    bayesGF = GF_prod*p_GF;
+
+    return maxGenderByMF(bayesGM,bayesGF);
+}
+
+function maxGenderByMF(M,F){
+    return M > F ?  "Masculino" : F > M ? "Femenino":"Ocurrió un problema, o no hay suficientes datos";
 }

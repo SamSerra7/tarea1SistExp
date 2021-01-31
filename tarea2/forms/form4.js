@@ -156,7 +156,7 @@ function calculate4(root){
                                                             p_gender,m,classInstancesLT1,classInstancesLT2,
                                                             classInstancesLT3,classInstancesLT4,p_LT1,
                                                             p_LT2,p_LT3,p_LT4);
-
+    
     //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
@@ -177,9 +177,68 @@ function bayesAlgorithmLearningTypesByBAG(bayesLT1,bayesLT2,bayesLT3,bayesLT4,
                                         p_LT2,p_LT3,p_LT4){
 
     //Learning Type 1 frecuencies
+    let BfrecuencyLT1 = getInstancesByClass(entityNameStudent,"Recinto",branch,"ASIMILADOR");
+    let AfrecuencyLT1 = getInstancesByClass(entityNameStudent,"Promedio",average,"ASIMILADOR");
+    let GfrecuencyLT1 = getInstancesByClass(entityNameStudent,"Sexo",gender,"ASIMILADOR");
     //Learning Type 2 frecuencies
+    let BfrecuencyLT2 = getInstancesByClass(entityNameStudent,"Recinto",branch,"ACOMODADOR");
+    let AfrecuencyLT2 = getInstancesByClass(entityNameStudent,"Promedio",average,"ACOMODADOR");
+    let GfrecuencyLT2 = getInstancesByClass(entityNameStudent,"Sexo",gender,"ACOMODADOR");
     //Learning Type 3 frecuencies
+    let BfrecuencyLT3 = getInstancesByClass(entityNameStudent,"Recinto",branch,"CONVERGENTE");
+    let AfrecuencyLT3 = getInstancesByClass(entityNameStudent,"Promedio",average,"CONVERGENTE");
+    let GfrecuencyLT3 = getInstancesByClass(entityNameStudent,"Sexo",gender,"CONVERGENTE");
     //Learning Type 4 frecuencies
+    let BfrecuencyLT4 = getInstancesByClass(entityNameStudent,"Recinto",branch,"DIVERGENTE");
+    let AfrecuencyLT4 = getInstancesByClass(entityNameStudent,"Promedio",average,"DIVERGENTE");
+    let GfrecuencyLT4 = getInstancesByClass(entityNameStudent,"Sexo",gender,"DIVERGENTE");
 
 
+    //bayes calculations
+    //ASIMILADOR products
+    let BbayesLT1 = bayes(BfrecuencyLT1,m,p_branch,classInstancesLT1);
+    let AayesLT1 = bayes(AfrecuencyLT1,m,p_average,classInstancesLT1);
+    let GbayesLT1 = bayes(GfrecuencyLT1,m,p_gender,classInstancesLT1);
+    
+    let LT1_prod =  BbayesLT1 * AayesLT1 * GbayesLT1;
+
+    //ACOMODADOR products
+    let BbayesLT2 = bayes(BfrecuencyLT2,m,p_branch,classInstancesLT2);
+    let AayesLT2 = bayes(AfrecuencyLT2,m,p_average,classInstancesLT2);
+    let GbayesLT2 = bayes(GfrecuencyLT2,m,p_gender,classInstancesLT2);
+    
+    let LT2_prod =  BbayesLT2 * AayesLT2 * GbayesLT2;
+
+    //CONVERGENTE products
+    let BbayesLT3 = bayes(BfrecuencyLT3,m,p_branch,classInstancesLT3);
+    let AayesLT3 = bayes(AfrecuencyLT3,m,p_average,classInstancesLT3);
+    let GbayesLT3 = bayes(GfrecuencyLT3,m,p_gender,classInstancesLT3);
+    
+    let LT3_prod =  BbayesLT3 * AayesLT3 * GbayesLT3;
+
+    //DIVERGENTE products
+    let BbayesLT4 = bayes(BfrecuencyLT4,m,p_branch,classInstancesLT4);
+    let AayesLT4 = bayes(AfrecuencyLT4,m,p_average,classInstancesLT4);
+    let GbayesLT4 = bayes(GfrecuencyLT4,m,p_gender,classInstancesLT4);
+    
+    let LT4_prod =  BbayesLT4 * AayesLT4 * GbayesLT4;
+
+    
+    bayesLT1 = LT1_prod*p_LT1;
+    bayesLT2 = LT2_prod*p_LT2;
+    bayesLT3 = LT3_prod*p_LT3;
+    bayesLT4 = LT4_prod*p_LT4;
+
+    return maxLearningTypeByAACD(bayesLT1,bayesLT2,bayesLT3,bayesLT4);
+     
+}
+
+//returns the name of the max value Learning Type between ASIMILADOR,ACOMODADOR,CONVERGENTE,DIVERGENTE
+function maxLearningTypeByAACD(LT1,LT2,LT3,LT4){
+    return  (LT1>LT2) ? 
+                ( (LT1>LT3) ? ((LT1>LT4) ? "ASIMILADOR": "DIVERGENTE") 
+                    : ( (LT3>LT4) ? "CONVERGENTE":"DIVERGENTE" ) ) 
+            : 
+                ( (LT2>LT3) ? ((LT2>LT4) ? "ACOMODADOR" : "DIVERGENTE")
+                    : ( (LT3>LT4) ? "CONVERGENTE":"DIVERGENTE" ) ); 
 }

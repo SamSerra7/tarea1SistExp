@@ -38,16 +38,16 @@ function createForm2(root){
     opt_sel.id = "learningType";
     let opt_1 = document.createElement("option");
     opt_1.innerText = "divergente";
-    opt_1.value = "divergente"; 
+    opt_1.value = "DIVERGENTE"; 
     let opt_2 = document.createElement("option");
     opt_2.innerText = "convergente";
-    opt_2.value = "convergente";
+    opt_2.value = "CONVERGENTE";
     let opt_3 = document.createElement("option");
     opt_3.innerText = "asimilador";
-    opt_3.value = "asimilador";
+    opt_3.value = "ASIMILADOR";
     let opt_4 = document.createElement("option");
     opt_4.innerText = "acomodador";
-    opt_4.value = "acomodador";
+    opt_4.value = "ACOMODADOR";
 
     opt_sel.appendChild(opt_1);
     opt_sel.appendChild(opt_2);
@@ -122,28 +122,35 @@ function createForm2(root){
 function calculate2(root){
 
     let currentBranch = "";
-    let currentDistance;
+    let bayesP=0;
+    let bayesT=0;
 
     let learningType = document.getElementById("learningType").value;
     let average = document.getElementById("average").value;
     let gender = document.getElementById("gender").value;
 
+    //sets the percentage of all attributes
+    let p_average = 1/percentageDistinctValues(entityNameStudent,"Promedio");
+    let p_learningType = 1/percentageDistinctValues(entityNameStudent,"Estilo");
+    let p_gender = 1/percentageDistinctValues(entityNameStudent,"Sexo");
+   
+    const m = 8;
+
+    let classInstancesP = getInstances(entityNameStudent,"Recinto","Paraiso");
+    let classInstancesT = getInstances(entityNameStudent,"Recinto","Turrialba");
+
+    let totalClassInstances = (classInstancesP+classInstancesT);
     
-    //evaluate all variables against the JSON
-    getJSON()["EstiloSexoPromedioRecinto"].map(element => {
-        //make the euclidean calc
-        let euclidean = Math.sqrt( 
-                                    ( ( learningType === element["Estilo"].toLowerCase()? 0.001 : 1 ) ^ 2 ) + 
-                                    ( ( average - parseFloat(element["Promedio"]) ) ^ 2 ) + 
-                                    ( ( gender === element["Sexo"] ? 0.001 : 1 ) ^ 2 ) 
-                                );
-        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
-        if(currentDistance === undefined || euclidean < currentDistance){
-            currentDistance = euclidean;
-            currentBranch = element["Recinto"];
-        }                   
-    });
+    let p_P = classInstancesP/totalClassInstances;
+    let p_T = classInstancesT/totalClassInstances;
+
+    debugger;
+    currentBranch = bayesAlgorithmBranchByGALT(bayesP,bayesT,gender,average,
+                                                learningType,p_gender,p_average,
+                                                p_learningType,m,classInstancesP,classInstancesT,
+                                                p_P,p_T);
     
+
     //show the result dinamically in the screen
     let result = document.getElementById("result")
     while(result.firstChild){
@@ -154,4 +161,47 @@ function calculate2(root){
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
+}
+
+
+function bayesAlgorithmBranchByGALT(bayesP,bayesT,gender,average,
+                                    learningType,p_gender,p_average,
+                                    p_learningType,m,classInstancesP,classInstancesT,
+                                    p_P,p_T){
+
+    //Branch Paraiso frecuencies
+    let GfrecuencyP = getInstancesByClass(entityNameStudent,"Sexo",gender,"Paraiso");
+    let AfrecuencyP = getInstancesByClass(entityNameStudent,"Promedio",average,"Paraiso");
+    let LTfrecuencyP = getInstancesByClass(entityNameStudent,"Estilo",learningType,"Paraiso");
+    //Branch Turrialba frecuencies
+    let GfrecuencyT = getInstancesByClass(entityNameStudent,"Sexo",gender,"Turrialba");
+    let AfrecuencyT = getInstancesByClass(entityNameStudent,"Promedio",average,"Turrialba");
+    let LTfrecuencyT = getInstancesByClass(entityNameStudent,"Estilo",learningType,"Turrialba");
+
+
+    //bayes calculations
+    //M products
+    let GbayesP = bayes(GfrecuencyP,m,p_gender,classInstancesP);
+    let AbayesP = bayes(AfrecuencyP,m,p_average,classInstancesP);
+    let LTbayesP = bayes(LTfrecuencyP,m,p_learningType,classInstancesP);
+
+    let P_prod =  GbayesP * AbayesP * LTbayesP;
+
+    //F products
+    let GbayesT = bayes(GfrecuencyT,m,p_gender,classInstancesT);
+    let AbayesT = bayes(AfrecuencyT,m,p_average,classInstancesT);
+    let LTbayesT = bayes(LTfrecuencyT,m,p_learningType,classInstancesT);
+
+    let T_prod =  GbayesT * AbayesT * LTbayesT;
+
+
+    bayesP = P_prod*p_P;
+    bayesT = T_prod*p_T;
+
+
+    return maxBranch(bayesP,bayesT);
+}
+
+function maxBranch(P,T){
+return P > T ?  "Paraiso" : T > P ? "Turrialba":"Ocurrió un problema, o no hay suficientes datos";
 }

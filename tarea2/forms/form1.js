@@ -2932,7 +2932,7 @@ const getJSON = () => {
                     "OR": "18",
                     "CA-EC": "4",
                     "EA-OR": "-1",
-                    "Estilo": "asimilador"
+                    "Estilo": "ASIMILADOR"
                 },
                 {
                     "Sexo": "M",

@@ -357,7 +357,7 @@ function bayesAlgorithmProfesors(age,gender,exp,times,
     let GfrecuencyI = getInstancesByClass(entityNameProfesors,"G",tech_teaching,"Intermediate");
     let HfrecuencyI = getInstancesByClass(entityNameProfesors,"H",exp_web,"Intermediate");
 
-    //Intermediate Advanced
+    //Advanced Freciencies
     let AfrecuencyA = getInstancesByClass(entityNameProfesors,"A",age,"Advanced");
     let BfrecuencyA = getInstancesByClass(entityNameProfesors,"B",gender,"Advanced");
     let CfrecuencyA = getInstancesByClass(entityNameProfesors,"C",exp,"Advanced");
@@ -450,9 +450,9 @@ function getInstances(type,attr,value){
 function getInstancesByClass(type,attr,value,category){
     let count = 0;
 
-    getJSON()[type].map(profesor =>{
-        if(profesor["Class"] === category){
-            let actualAttr = profesor[attr];
+    getJSON()[type].map(element =>{
+        if(element["Class"] === category || element["Estilo"] === category || element["Sexo"]=== category || element["Recinto"]===category){
+            let actualAttr = element[attr];
             if(actualAttr === value){
                 count++;
             }
