@@ -134,7 +134,7 @@ function calculate2(root){
     let p_learningType = 1/percentageDistinctValues(entityNameStudent,"Estilo");
     let p_gender = 1/percentageDistinctValues(entityNameStudent,"Sexo");
    
-    const m = 8;
+    const m = 3;
 
     let classInstancesP = getInstances(entityNameStudent,"Recinto","Paraiso");
     let classInstancesT = getInstances(entityNameStudent,"Recinto","Turrialba");

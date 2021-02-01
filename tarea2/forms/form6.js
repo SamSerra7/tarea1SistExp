@@ -225,7 +225,7 @@ function calculate6(root){
     let p_capacity = 1/percentageDistinctValues(entityNameNetworks,"Capacity (Ca)");
     let p_cost = 1/percentageDistinctValues(entityNameNetworks,"Costo (Co)");
 
-    const m = 8;
+    const m = 4;
 
     let classInstancesA = getInstances(entityNameNetworks,"Class","A");
     let classInstancesB = getInstances(entityNameNetworks,"Class","B");

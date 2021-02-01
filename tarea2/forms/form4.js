@@ -137,7 +137,7 @@ function calculate4(root){
     let p_average = 1/percentageDistinctValues(entityNameStudent,"Promedio");
     let p_gender = 1/percentageDistinctValues(entityNameStudent,"Sexo");
    
-    const m = 8;
+    const m = 3;
 
     let classInstancesLT1 = getInstances(entityNameStudent,"Estilo","ASIMILADOR");
     let classInstancesLT2 = getInstances(entityNameStudent,"Estilo","ACOMODADOR");

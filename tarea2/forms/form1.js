@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+const entityName1 = "RecintoEstilo";
+
 //Transpose the Excel to JSON and returned it as a Json Object
 const getJSON = () => {
     let strJSON = `
@@ -3836,7 +3838,18 @@ function createOption(name){
 function calculate1(root){
 
     let currentType = "";
-    let currentDistance;
+    /*
+    LT = Learning types
+    LT1 = Asimilador
+    LT2 = Acomodador
+    LT3 = Convergente 
+    LT4 = Divergente
+    */
+
+    let bayesLT1=0;
+    let bayesLT2=0;
+    let bayesLT3=0;
+    let bayesLT4=0;
 
     let ec = (
         parseInt(document.getElementById("discerniendo").value)+parseInt(document.getElementById("receptivamente").value)+
@@ -3867,21 +3880,35 @@ function calculate1(root){
         parseInt(document.getElementById("abierto").value)
     );
 
-    //evaluate all variables against the JSON
-    getJSON()["RecintoEstilo"].map(element => {
-        //make the euclidean calc
-        let euclidean = Math.sqrt( 
-                                    ( ( ca - parseInt(element.CA) ) ^ 2 ) + 
-                                    ( ( ec - parseInt(element.EC) ) ^ 2 ) + 
-                                    ( ( ea - parseInt(element.EA) ) ^ 2 ) + 
-                                    ( ( or - parseInt(element.OR) ) ^ 2 ) 
-                                );
-        //basically, ask if is the first time or if the current euclidean calc is closer (lower) to the currentDistance temp variable 
-        if(currentDistance === undefined || euclidean < currentDistance){
-            currentDistance = euclidean;
-            currentType = element["Estilo"];
-        }                   
-    });
+    
+
+    //make the bayesian algorithm 
+    //set the percentages of all atributes
+    let p_CA = 1/percentageDistinctValues(entityName1, "CA");
+    let p_EC = 1/percentageDistinctValues(entityName1, "EC");
+    let p_EA = 1/percentageDistinctValues(entityName1, "EA");
+    let p_OR = 1/percentageDistinctValues(entityName1, "OR");
+
+    
+    const  m = 4;
+
+    let classInstancesLT1 = getInstances(entityName1, "Estilo", "ASIMILADOR");
+    let classInstancesLT2 = getInstances(entityName1, "Estilo", "ACOMODADOR");
+    let classInstancesLT3 = getInstances(entityName1, "Estilo", "CONVERGENTE");
+    let classInstancesLT4 = getInstances(entityName1, "Estilo", "DIVERGENTE");
+
+    let totalClassInstances = (classInstancesLT1+classInstancesLT2+classInstancesLT3+classInstancesLT4);
+    let p_LT1 = classInstancesLT1/totalClassInstances;
+    let p_LT2 = classInstancesLT2/totalClassInstances;
+    let p_LT3 = classInstancesLT3/totalClassInstances;
+    let p_LT4 = classInstancesLT4/totalClassInstances;
+
+    currentType = bayesAlgorithmLearningTypesByCEEOCE(  bayesLT1,bayesLT2,bayesLT3,bayesLT4,
+                                                        ca,ec,ea,or,p_CA,p_EC,p_EA,p_OR,m,
+                                                        classInstancesLT1,classInstancesLT2,classInstancesLT3,
+                                                        classInstancesLT4,p_LT1,p_LT2,p_LT3,p_LT4);
+
+
 
     //show the result dinamically in the screen
     let result = document.getElementById("result")
@@ -3893,5 +3920,96 @@ function calculate1(root){
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
+}
+
+
+function bayesAlgorithmLearningTypesByCEEOCE(bayesLT1,bayesLT2,bayesLT3,bayesLT4,
+    ca,ec,ea,or,p_CA,p_EC,p_EA,
+    p_OR,m,classInstancesLT1,
+    classInstancesLT2,classInstancesLT3,
+    classInstancesLT4,p_LT1,p_LT2,p_LT3,p_LT4){
+    //Learning type 1 frecuencies
+    let CAfrecuencyLT1 = getInstancesByClass(entityName1, "CA",ca,"ASIMILADOR");
+    let ECfrecuencyLT1 = getInstancesByClass(entityName1, "EC",ec,"ASIMILADOR");
+    let EAfrecuencyLT1 = getInstancesByClass(entityName1, "EA",ea,"ASIMILADOR");
+    let ORfrecuencyLT1 = getInstancesByClass(entityName1, "OR",or,"ASIMILADOR");
+
+    //Learning type 2 frecuencies                                        
+
+    let CAfrecuencyLT2 = getInstancesByClass(entityName1, "CA",ca,"ACOMODADOR");
+    let ECfrecuencyLT2 = getInstancesByClass(entityName1, "EC",ec,"ACOMODADOR");
+    let EAfrecuencyLT2 = getInstancesByClass(entityName1, "EA",ea,"ACOMODADOR");
+    let ORfrecuencyLT2 = getInstancesByClass(entityName1, "OR",or,"ACOMODADOR");
+
+    //Learning type 3 frecuencies
+
+    let CAfrecuencyLT3 = getInstancesByClass(entityName1, "CA",ca,"CONVERGENTE");
+    let ECfrecuencyLT3 = getInstancesByClass(entityName1, "EC",ec,"CONVERGENTE");
+    let EAfrecuencyLT3 = getInstancesByClass(entityName1, "EA",ea,"CONVERGENTE");
+    let ORfrecuencyLT3 = getInstancesByClass(entityName1, "OR",or,"CONVERGENTE");
+
+    //Learning type 4 frecuencies
+
+    let CAfrecuencyLT4 = getInstancesByClass(entityName1, "CA",ca,"DIVERGENTE");
+    let ECfrecuencyLT4 = getInstancesByClass(entityName1, "EC",ec,"DIVERGENTE");
+    let EAfrecuencyLT4 = getInstancesByClass(entityName1, "EA",ea,"DIVERGENTE");
+    let ORfrecuencyLT4 = getInstancesByClass(entityName1, "OR",or,"DIVERGENTE");
+
+
+    //Prod learning type 1
+
+    let CAbayesLT1 = bayes(CAfrecuencyLT1,m,p_CA,classInstancesLT1);
+    let ECbayesLT1 = bayes(ECfrecuencyLT1,m,p_EC,classInstancesLT1);
+    let EAbayesLT1 = bayes(EAfrecuencyLT1,m,p_EA,classInstancesLT1);
+    let ORbayesLT1 = bayes(ORfrecuencyLT1,m,p_OR,classInstancesLT1);
+
+    let LT1_prod =  CAbayesLT1 * ECbayesLT1 * EAbayesLT1 * ORbayesLT1 ;
+
+    //Prod learning type 2
+
+    let CAbayesLT2 = bayes(CAfrecuencyLT2,m,p_CA,classInstancesLT2);
+    let ECbayesLT2 = bayes(ECfrecuencyLT2,m,p_EC,classInstancesLT2);
+    let EAbayesLT2 = bayes(EAfrecuencyLT2,m,p_EA,classInstancesLT2);
+    let ORbayesLT2 = bayes(ORfrecuencyLT2,m,p_OR,classInstancesLT2);
+
+    let LT2_prod =  CAbayesLT2 * ECbayesLT2 * EAbayesLT2 * ORbayesLT2 ;
+
+    //Prod learning type 3
+
+    let CAbayesLT3 = bayes(CAfrecuencyLT3,m,p_CA,classInstancesLT3);
+    let ECbayesLT3 = bayes(ECfrecuencyLT3,m,p_EC,classInstancesLT3);
+    let EAbayesLT3 = bayes(EAfrecuencyLT3,m,p_EA,classInstancesLT3);
+    let ORbayesLT3 = bayes(ORfrecuencyLT3,m,p_OR,classInstancesLT3);
+
+    let LT3_prod =  CAbayesLT3 * ECbayesLT3 * EAbayesLT3 * ORbayesLT3 ;
+
+    //Prod learning type 4
+
+    let CAbayesLT4 = bayes(CAfrecuencyLT4,m,p_CA,classInstancesLT4);
+    let ECbayesLT4 = bayes(ECfrecuencyLT4,m,p_EC,classInstancesLT4);
+    let EAbayesLT4 = bayes(EAfrecuencyLT4,m,p_EA,classInstancesLT4);
+    let ORbayesLT4 = bayes(ORfrecuencyLT4,m,p_OR,classInstancesLT4);
+
+    let LT4_prod =  CAbayesLT4 * ECbayesLT4 * EAbayesLT4 * ORbayesLT4 ;
+
+    bayesLT1 = LT1_prod*p_LT1;
+    bayesLT2 = LT2_prod*p_LT2;
+    bayesLT3 = LT3_prod*p_LT3;
+    bayesLT4 = LT4_prod*p_LT4;
+
+
+    console.log(bayesLT1,bayesLT2,bayesLT3,bayesLT4)                                         
+    return maxLearningTypeByCEEOCE(bayesLT1, bayesLT2, bayesLT3, bayesLT4);
+}
+
+//returns the name of the max value by Learning type
+
+function maxLearningTypeByCEEOCE(LT1, LT2, LT3, LT4){
+    return  (LT1 > LT2) ?
+                ( (LT1 > LT3) ? ((LT1 > LT4) ? "ASIMILADOR" : "DIVERGENTE")
+                    : ( (LT3 > LT4) ? "COVERGENTE" : "DIVERGENTE" ) )
+            :
+                ( (LT2 > LT3) ? ((LT2 > LT4) ? "ACOMODADOR" : "DIVERGENTE")
+                    : ( (LT3 > LT4) ? "COVERGENTE" : "DIVERGENTE" ) );
 }
 

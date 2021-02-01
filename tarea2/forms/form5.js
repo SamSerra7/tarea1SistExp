@@ -453,7 +453,7 @@ function getInstancesByClass(type,attr,value,category){
     getJSON()[type].map(element =>{
         if(element["Class"] === category || element["Estilo"] === category || element["Sexo"]=== category || element["Recinto"]===category){
             let actualAttr = element[attr];
-            if(actualAttr === value){
+            if(actualAttr == value){
                 count++;
             }
         }

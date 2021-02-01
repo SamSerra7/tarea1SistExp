@@ -130,7 +130,7 @@ function calculate3(root){
     let p_average = 1/percentageDistinctValues(entityNameStudent,"Promedio");
     let p_learningType = 1/percentageDistinctValues(entityNameStudent,"Estilo");
    
-    const m = 8;
+    const m = 3;
 
     let classInstancesGM = getInstances(entityNameStudent,"Sexo","M");
     let classInstancesGF = getInstances(entityNameStudent,"Sexo","F");
