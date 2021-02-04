@@ -192,6 +192,10 @@ function bayesAlgorithmGenderByBALT(bayesGM,bayesGF,branch,average,
     bayesGM = GM_prod*p_GM;
     bayesGF = GF_prod*p_GF;
 
+
+    console.log("probabilidad Masculino: "+bayesGM);
+    console.log("probabilidad Femenino: "+bayesGF); 
+    
     return maxGenderByMF(bayesGM,bayesGF);
 }
 

@@ -144,7 +144,7 @@ function calculate2(root){
     let p_P = classInstancesP/totalClassInstances;
     let p_T = classInstancesT/totalClassInstances;
 
-    debugger;
+    
     currentBranch = bayesAlgorithmBranchByGALT(bayesP,bayesT,gender,average,
                                                 learningType,p_gender,p_average,
                                                 p_learningType,m,classInstancesP,classInstancesT,
@@ -197,6 +197,10 @@ function bayesAlgorithmBranchByGALT(bayesP,bayesT,gender,average,
 
     bayesP = P_prod*p_P;
     bayesT = T_prod*p_T;
+
+
+    console.log("probabilidad Paraiso: "+bayesP);
+    console.log("probabilidad Turrialba: "+bayesT);
 
 
     return maxBranch(bayesP,bayesT);

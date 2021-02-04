@@ -3852,30 +3852,24 @@ function calculate1(root){
     let bayesLT4=0;
 
     let ec = (
-        parseInt(document.getElementById("discerniendo").value)+parseInt(document.getElementById("receptivamente").value)+
-        parseInt(document.getElementById("sintiendo").value)+parseInt(document.getElementById("aceptando").value)+
-        parseInt(document.getElementById("intuitivamente").value)+parseInt(document.getElementById("abstracto").value)+
-        parseInt(document.getElementById("orientado al presente").value)+parseInt(document.getElementById("aprendo más de la experiencia").value)+
-        parseInt(document.getElementById("emotivo").value)
+        parseInt(document.getElementById("receptivamente").value)+parseInt(document.getElementById("sintiendo").value)+
+        parseInt(document.getElementById("aceptando").value)+parseInt(document.getElementById("intuitivamente").value)+
+        parseInt(document.getElementById("orientado al presente").value)+parseInt(document.getElementById("aprendo más de la experiencia").value)
     );
     let or = (
-        parseInt(document.getElementById("ensayando").value)+parseInt(document.getElementById("relacionando").value)+
-        parseInt(document.getElementById("observando").value)+parseInt(document.getElementById("arriegando").value)+
-        parseInt(document.getElementById("productivamente").value)+parseInt(document.getElementById("observando").value)+
-        parseInt(document.getElementById("reflexivamente").value)+parseInt(document.getElementById("aprendo más de la observación").value)+
-        parseInt(document.getElementById("reservado").value)
+        parseInt(document.getElementById("ensayando").value)+parseInt(document.getElementById("observando").value)+
+        parseInt(document.getElementById("observando").value)+parseInt(document.getElementById("reflexivamente").value)+
+        parseInt(document.getElementById("aprendo más de la observación").value)+parseInt(document.getElementById("reservado").value)
     );
 	let ca = (
-        parseInt(document.getElementById("involucrandome").value)+parseInt(document.getElementById("analíticamente").value)+
+        parseInt(document.getElementById("analíticamente").value)+
         parseInt(document.getElementById("pensando").value)+parseInt(document.getElementById("evaluando").value)+
-        parseInt(document.getElementById("lógicamente").value)+parseInt(document.getElementById("concreto").value)+
-        parseInt(document.getElementById("orientado al futuro").value)+parseInt(document.getElementById("aprendo más de la conceptualización").value)+
+        parseInt(document.getElementById("lógicamente").value)+parseInt(document.getElementById("aprendo más de la conceptualización").value)+
         parseInt(document.getElementById("racional").value)
     );
 	let ea = (
-        parseInt(document.getElementById("practicando").value)+parseInt(document.getElementById("imparcialmente").value)+
-        parseInt(document.getElementById("haciendo").value)+parseInt(document.getElementById("con cautela").value)+
-        parseInt(document.getElementById("cuestionando").value)+parseInt(document.getElementById("activo").value)+
+        parseInt(document.getElementById("practicando").value)+
+        parseInt(document.getElementById("haciendo").value)+parseInt(document.getElementById("activo").value)+
         parseInt(document.getElementById("pragmático").value)+parseInt(document.getElementById("aprendo más de la experimentación").value)+
         parseInt(document.getElementById("abierto").value)
     );
@@ -3997,8 +3991,11 @@ function bayesAlgorithmLearningTypesByCEEOCE(bayesLT1,bayesLT2,bayesLT3,bayesLT4
     bayesLT3 = LT3_prod*p_LT3;
     bayesLT4 = LT4_prod*p_LT4;
 
-
-    console.log(bayesLT1,bayesLT2,bayesLT3,bayesLT4)                                         
+    console.log("probabilidad ASIMILADOR: "+bayesLT1);
+    console.log("probabilidad ACOMODADOR: "+bayesLT2);
+    console.log("probabilidad CONVERGENTE: "+bayesLT3);
+    console.log("probabilidad DIVERGENTE: "+bayesLT4);
+                                             
     return maxLearningTypeByCEEOCE(bayesLT1, bayesLT2, bayesLT3, bayesLT4);
 }
 

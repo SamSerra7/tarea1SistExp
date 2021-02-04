@@ -271,7 +271,7 @@ function createForm5(root){
 //make the bayes calculation
 function calculate5(root){
 
-    let profesorType = 0;
+    let profesorType = '';
     let bayesB = 0;
     let bayesI = 0;
     let bayesA = 0;
@@ -321,11 +321,7 @@ function calculate5(root){
 
     //show results
     let finalStr = document.createElement("h1");
-    finalStr.innerText = `Usted es, probablemente, un tipo de profesor:  
-                                ${profesorType == bayesB ? "Principiante"
-                                  : profesorType == bayesI ? "Intermedio"
-                                  : profesorType == bayesA ? "Avanzado" 
-                                  : "...Disculpe, ocurrió un error en el calculo"}`;
+    finalStr.innerText = `Usted es, probablemente, un tipo de profesor: ${profesorType}`;
     finalStr.style= "margin-top: 3%;";
     result.appendChild(finalStr);
     window.scrollTo(0,document.body.scrollHeight);//scroll to bottom
@@ -415,6 +411,10 @@ function bayesAlgorithmProfesors(age,gender,exp,times,
     bayesI = inter_prod*p_intermediate;
     bayesA = adv_prod*p_advanced;
 
+    console.log("probabilidad Beginner: "+bayesB);
+    console.log("probabilidad Intermediate: "+bayesI);
+    console.log("probabilidad Advanced: "+bayesA);
+
     return maxBayesBIA(bayesB,bayesI,bayesA)
 }
 
@@ -470,5 +470,8 @@ function bayes(frecuency,m,p,n){
 
 //finds the lowest value of B I A
 function maxBayesBIA(B,I,A){
-    return (B>I) ? (B>A) ? B:A : (I>A) ? I:A; //find the lowest between the three with ternary operators
+    return (B>I) ? 
+                (B>A) ? "Principiante": "Avanzado" 
+            : 
+                (I>A) ? "Intermedio" : "Avanzado"; //find the lowest between the three with ternary operators
 }

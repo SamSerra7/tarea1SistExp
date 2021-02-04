@@ -288,10 +288,14 @@ function bayesAlgorithmNetworks(bayesA,bayesB,reliability,links,
     let cobayesB = bayes(cofrecuencyB,m,p_cost,classInstancesB);
     
     let B_prod =  rebayesB * libayesB * cabayesB * cobayesB;
-    console.log(B_prod);
+    
     
     bayesA = A_prod*p_A; 
     bayesB = B_prod*p_B;        
+
+    
+    console.log("probabilidad A: "+bayesA);
+    console.log("probabilidad B: "+bayesB);
 
     //validates if its A,B (if the clases are equal, it can be both)
     return bayesA > bayesB ? "A": bayesB > bayesA ? "B": "A o B (ambas son iguales o no hay suficientes datos)"; 

@@ -229,8 +229,13 @@ function bayesAlgorithmLearningTypesByBAG(bayesLT1,bayesLT2,bayesLT3,bayesLT4,
     bayesLT3 = LT3_prod*p_LT3;
     bayesLT4 = LT4_prod*p_LT4;
 
+
+    console.log("probabilidad ASIMILADOR: "+bayesLT1);
+    console.log("probabilidad ACOMODADOR: "+bayesLT2);
+    console.log("probabilidad CONVERGENTE: "+bayesLT3);
+    console.log("probabilidad DIVERGENTE: "+bayesLT4);
+
     return maxLearningTypeByAACD(bayesLT1,bayesLT2,bayesLT3,bayesLT4);
-     
 }
 
 //returns the name of the max value Learning Type between ASIMILADOR,ACOMODADOR,CONVERGENTE,DIVERGENTE
